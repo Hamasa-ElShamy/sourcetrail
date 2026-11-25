@@ -1,0 +1,59 @@
+$ sourcetrail add demo/sources2
+3 passages  demo/sources2/report_en.md
+2 passages  demo/sources2/تقرير.md
+
+$ sourcetrail trace "Revenue increased 40% in 2025"
+CLAIM:
+Revenue increased 40% in 2025
+
+Sources:
+1. report_en.md  (supports)
+   line 1
+   "Sales grew 40 percent in 2025 compared with 2024."
+
+Evidence Status: SUPPORTED
+
+$ sourcetrail trace "We have 1,200,000 customers"
+CLAIM:
+We have 1,200,000 customers
+
+Sources:
+1. report_en.md  (supports)
+   line 2
+   "The company employs 1.2 million users across the region."
+
+Evidence Status: SUPPORTED
+
+$ sourcetrail trace "Revenue rose 55%"
+CLAIM:
+Revenue rose 55%
+
+Sources:
+1. report_en.md  (gives a different number)
+   line 1
+   "Sales grew 40 percent in 2025 compared with 2024."
+
+Evidence Status: DIFFERS
+Sources disagree on the number. Check which one is the original.
+
+$ sourcetrail trace "زادت المبيعات 40 بالمائة"
+CLAIM:
+زادت المبيعات 40 بالمائة
+
+Sources:
+1. تقرير.md  (supports)
+   line 1
+   "ارتفعت الإيرادات بنسبة ٤٠٪ في عام ٢٠٢٥."
+
+Evidence Status: SUPPORTED
+
+$ sourcetrail trace "عدد العملاء 1.2 مليون"
+CLAIM:
+عدد العملاء 1.2 مليون
+
+Sources:
+1. تقرير.md  (supports)
+   line 2
+   "بلغ عدد العملاء ١٫٢ مليون."
+
+Evidence Status: SUPPORTED

@@ -89,3 +89,14 @@ OCR for scanned files, embeddings for meaning-based matching, entity extraction 
 ## License
 
 MIT
+
+
+## Matching: what it does and does not understand (v0.2)
+
+Examples with real output are in [`demo/demo-output-matching.txt`](demo/demo-output-matching.txt) (files in `demo/sources2/`).
+
+- Word forms: `growing`, `grew`, `grow` match; `revenues` and `sales` match through a small hand-written synonym list (`SYN_GROUPS` in `sourcetrail/trace.py`, English and Arabic, about 13 groups).
+- Number sizes: `1,200,000`, `1.2 million` and `١٫٢ مليون` are the same number; `40 percent`, `40%` and `٤٠٪` are the same.
+- Arabic: light normalisation (alef and ta marbuta forms, the `ال` prefix, common plural endings).
+- Still NOT understood: real meaning. There are no embeddings and no AI model. A claim worded in a way the synonym list does not cover returns NOT FOUND. That does not mean the claim is false.
+- Arabic claims scan every indexed passage instead of using the search index, which is fine for a personal library and slower for very large ones.

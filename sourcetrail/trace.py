@@ -15,7 +15,10 @@ from pathlib import Path
 STOP = set("""a an the of to in on at for and or but is are was were be been being it its this that these those with as by from
 has have had do does did not no will would can could should may might than then so such into over under about after before
 which who whom what when where while also their there they them his her he she we you i our your my""".split())
-NUM = re.compile(r"(?<![\w.])(\d[\d,]*(?:\.\d+)?)\s*(%|percent)?", re.I)
+NUM = re.compile(r"(?<![\w.])(\d[\d,]*(?:\.\d+)?)\s*(%|percent|بالمائة|٪|k\b|thousand|million|billion|m\b|bn\b|ألف|الف|مليون|مليار)?", re.I)
+MAG = {"k": 1e3, "thousand": 1e3, "ألف": 1e3, "الف": 1e3, "m": 1e6, "million": 1e6, "مليون": 1e6,
+       "bn": 1e9, "billion": 1e9, "مليار": 1e9}
+PCT = {"%", "percent", "٪", "بالمائة"}
 AR_DIGITS = str.maketrans("٠١٢٣٤٥٦٧٨٩٫٬", "0123456789.,")
 
 
@@ -43,8 +46,66 @@ def _numbers(text):
             v = float(raw)
         except ValueError:
             continue
-        out.append((v, bool(m.group(2))))
+        unit = (m.group(2) or "").lower()
+        if unit in MAG:
+            v *= MAG[unit]
+        out.append((v, unit in PCT))
     return out
+
+
+# Small hand-written synonym groups (no model). Each group is mapped to its first word.
+SYN_GROUPS = [
+    "increase grow rise rose grew up gain jump climb growth", "decrease fall drop decline fell down shrink reduce cut",
+    "revenue sales turnover income", "cost expense spending expenditure", "customer client user buyer",
+    "employee staff worker headcount", "profit earnings margin", "accuracy precision score",
+    "زيادة ارتفاع نمو زاد زادت ارتفعت ارتفع نما نمت", "انخفاض نقص تراجع هبوط انخفض انخفضت تراجعت",
+    "ايرادات مبيعات دخل", "تكلفة مصروفات نفقات", "عملاء زبائن",
+]
+SYN = {}
+
+
+def _norm_ar(w):
+    if not re.search(r"[\u0600-\u06FF]", w):
+        return w
+    w = re.sub("[\u064B-\u0652\u0640]", "", w)
+    w = w.translate(str.maketrans({"أ": "ا", "إ": "ا", "آ": "ا", "ى": "ي", "ة": "ه"}))
+    for pre in ("وال", "بال", "كال", "فال", "لل", "ال"):
+        if w.startswith(pre) and len(w) - len(pre) >= 3:
+            w = w[len(pre):]
+            break
+    for suf in ("ات", "ون", "ين", "ان"):
+        if w.endswith(suf) and len(w) - len(suf) >= 3:
+            w = w[: -len(suf)]
+            break
+    return w
+
+
+def _build_syn():
+    for g in SYN_GROUPS:
+        ws = g.split()
+        for w in ws:
+            SYN[_norm_ar(w)] = _norm_ar(ws[0])
+
+
+def _stem(w):
+    w = _norm_ar(w)
+    if re.search(r"[\u0600-\u06FF]", w):
+        return SYN.get(w, w)
+    if w in SYN:
+        return SYN[w]
+    cands = []
+    for suf in ("ations", "ation", "ings", "ing", "edly", "ied", "ies", "ed", "es", "ly", "s"):
+        if w.endswith(suf) and len(w) - len(suf) >= 3 and not (suf == "s" and w.endswith("ss")):
+            cands.append(w[: -len(suf)] + ("y" if suf in ("ied", "ies") else ""))
+    for c in cands + [c + "e" for c in cands]:
+        if c in SYN:
+            return SYN[c]
+    if cands:
+        w = cands[0]
+    return SYN.get(w, w)
+
+
+_build_syn()
 
 
 def _keywords(text):
@@ -53,9 +114,7 @@ def _keywords(text):
     for w in words:
         if w in STOP:
             continue
-        if len(w) > 3 and w.endswith("s") and not w.endswith("ss"):
-            w = w[:-1]
-        kws.append(w)
+        kws.append(_stem(w))
     return list(dict.fromkeys(kws))
 
 
@@ -82,13 +141,30 @@ def _comparable(claim_n, p):
     return not p[1]
 
 
+def _fts_query(text):
+    """Search terms: each claim word, its stem and its synonym group, so the index finds all spellings."""
+    terms = []
+    for w in re.findall(r"[^\W_]{2,}", text.lower(), re.UNICODE):
+        if w.isdigit() or w in STOP:
+            continue
+        group = [w, _stem(w)]
+        head = SYN.get(w) or SYN.get(_stem(w))
+        if head:
+            group += [x for x, h in SYN.items() if h == head]
+        for t in group:
+            t = t.replace('"', "")
+            if len(t) >= 2:
+                terms.append(f'"{t}"*')
+    return " OR ".join(dict.fromkeys(terms))
+
+
 def trace(library, claim, max_evidence=8):
     kws = _keywords(claim)
     claim_nums = _numbers(claim)
     if not kws:
         return Result(claim, "NOT FOUND", [])
-    query = " OR ".join(f'"{k}"*' for k in kws)
-    rows = library.search(query)
+    query = _fts_query(claim)
+    rows = library.all_passages() if re.search(r'[\u0600-\u06FF]', claim) else library.search(query)
     need = max(1, (len(kws) + 1) // 2)
     supports, differs, mentioned = [], [], []
     for path, loc, text in rows:

@@ -93,3 +93,15 @@ def test_cli(tmp_path, capsys):
 def test_unsupported(tmp_path):
     (tmp_path / "x.zip").write_bytes(b"x")
     assert main(["--db", str(tmp_path / "d.db"), "add", str(tmp_path / "x.zip")]) == 3
+
+
+def test_stem_and_synonym_and_magnitude(tmp_path):
+    import importlib
+    T = importlib.import_module('sourcetrail.trace')
+    assert T._stem("growing") == T._stem("grew") == "increase"
+    assert T._stem("revenues") == T._stem("sales")
+    assert T._numbers("1.2 million users") == [(1200000.0, False)]
+    assert T._numbers("40 percent") == [(40.0, True)]
+    assert T._numbers("٤٠٪") == [(40.0, True)]
+    assert T._stem("الإيرادات") == T._stem("ايرادات")
+    assert T._same((2.5e6, False), (2500000.0, False))

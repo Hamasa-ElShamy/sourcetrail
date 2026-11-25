@@ -34,3 +34,10 @@
 **الاختبار**: ٩ اختبارات تغطي الدعم مع الصفحة والخلية، التعارض، الاختلاف، عدم الوجود، وإعادة الفهرسة.
 
 **الحدود**: مطابقة كلمات وأرقام بس، ممكن تطلع مطابقات غلط، مفيش OCR ولا embeddings.
+
+
+## v0.2 additions / إضافات الإصدار 0.2
+
+**English.** `trace.py` now builds search terms from each word, its stem and its synonym group (`_fts_query`), normalises Arabic (`_norm_ar`), and reads magnitude words (`million`, `ألف`, `مليون`) into numbers. Arabic claims scan all passages because SQLite prefix search cannot find words with an attached `ال`. Tested in `tests/test_sourcetrail.py` (10 tests). Limit: the synonym list is small and hand-made, so meaning outside it is not matched.
+
+**بالعربي.** أضفنا تجذيع بسيط للإنجليزي والعربي، وقائمة مرادفات صغيرة (زاد/ارتفع، إيرادات/مبيعات...)، وفهم الأرقام بالمليون والألف والأرقام الهندية. الحد: القائمة صغيرة ومكتوبة يدوي، فالمعنى خارجها مش بيتطابق، ومفيش نموذج ذكاء اصطناعي.

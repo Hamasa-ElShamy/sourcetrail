@@ -70,3 +70,7 @@ class Library:
         return self.db.execute(
             "SELECT p.path, p.loc, p.text FROM fts JOIN passages p ON p.id=fts.rowid "
             "WHERE fts MATCH ? ORDER BY rank LIMIT ?", (match_query, limit)).fetchall()
+
+    def all_passages(self):
+        """Every passage (used for Arabic claims, where prefix search on raw words misses prefixed forms)."""
+        return self.db.execute("SELECT path, loc, text FROM passages").fetchall()

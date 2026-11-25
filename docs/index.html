@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SourceTrail: Where did I get that number from? Trace a claim to its evidence.</title><meta name="description" content="Index your own files and trace any claim to the page, cell or line that supports it.">
+<meta property="og:title" content="SourceTrail"><meta property="og:description" content="Index your own files and trace any claim to the page, cell or line that supports it.">
+<style>
+:root{--bg:#0f1420;--card:#171e2e;--fg:#e8ecf4;--mut:#9aa6bd;--acc:#5b9dff;--acc2:#7ee0b5}
+*{box-sizing:border-box}body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--fg)}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+header.hero{padding:72px 0 40px;text-align:center;background:radial-gradient(900px 300px at 50% -50px,#24407a55,transparent)}
+h1{font-size:3rem;margin:0 0 8px;letter-spacing:-1px}.tag{color:var(--mut);font-size:1.25rem;margin:0 auto 28px;max-width:640px}
+.btn{display:inline-block;padding:11px 22px;border-radius:9px;background:var(--acc);color:#04122b;font-weight:600;text-decoration:none;margin:4px}
+.btn.alt{background:transparent;color:var(--fg);border:1px solid #34405c}
+section{padding:28px 0}h2{font-size:1.5rem;margin:0 0 14px}
+.card{background:var(--card);border-radius:12px;padding:18px 22px;margin:12px 0}
+pre{background:#0a0e17;border:1px solid #232c44;border-radius:10px;padding:16px;overflow:auto;font-size:.88rem;line-height:1.5}
+code{font-family:ui-monospace,Menlo,Consolas,monospace}
+ul{padding-left:1.2rem}li{margin:6px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.mut{color:var(--mut)}.rtl{direction:rtl;text-align:right}img{max-width:100%;border-radius:10px;border:1px solid #232c44}
+footer{padding:40px 0 60px;color:var(--mut);text-align:center;font-size:.9rem}.warn{border-left:4px solid #d68910}
+</style></head><body>
+<header class="hero"><div class="wrap"><h1>SourceTrail</h1><p class="tag">Where did I get that number from? Trace a claim to its evidence.</p>
+<a class="btn" href="https://github.com/mohamed-elshamy-ai/sourcetrail">View on GitHub</a><a class="btn alt" href="#install">Install</a>
+<p class="mut" style="margin-top:18px">Open source &middot; MIT license &middot; runs on your machine</p></div></header>
+<main class="wrap">
+<section><h2>What it does</h2><p>SourceTrail indexes your PDFs, Word, Excel and text files locally. Give it a claim and it shows the exact page, cell or line that supports it, and warns when another file gives a different number. It does not ask an AI about your files: it takes you back to the original evidence.</p></section>
+<section><div class="grid"><div class="card"><b>Exact locations</b><div class="mut">PDF page, Word paragraph, text line, Excel cell.</div></div><div class="card"><b>Spots disagreement</b><div class="mut">Different numbers in different files.</div></div><div class="card"><b>Local SQLite</b><div class="mut">Your files never leave your machine.</div></div><div class="card"><b>Incremental</b><div class="mut">Only changed files are re-read.</div></div></div></section>
+<section><h2>Example</h2><pre><code>$ sourcetrail trace &quot;The model achieved 92% accuracy&quot;
+CLAIM:
+The model achieved 92% accuracy
+
+Sources:
+1. Research_Paper.pdf  (supports)
+   page 2
+   &quot;The model achieved 92% accuracy on the held-out test set.&quot;
+2. Experiment_Report.xlsx  (supports)
+   sheet Results, cell B2
+   &quot;Accuracy Value 92%&quot;
+3. Old_Notes.docx  (gives a different number)
+   paragraph 1
+   &quot;In the first run the model reached 89% accuracy on validation data.&quot;
+
+Evidence Status: CONFLICTING
+Sources disagree on the number. Check which one is the original.</code></pre></section>
+
+<section id="install"><h2>Install</h2><pre><code>git clone https://github.com/mohamed-elshamy-ai/sourcetrail
+cd sourcetrail
+pip install -e .
+sourcetrail add ~/Research
+sourcetrail trace &quot;The model achieved 92% accuracy&quot;</code></pre></section>
+<section><h2>How it works</h2><ol><li>Split each file into passages with a citable location and store them in SQLite full-text search.</li><li>Take the meaningful words and numbers of your claim.</li><li>Find passages sharing the words.</li><li>Same numbers means supports. Different numbers of the same kind means differs.</li><li>Report the status with every source.</li></ol>
+<div class="card rtl"><b>الشرح بالعربي</b><p>بتضيف ملفاتك فالأداة بتقسمها لفقرات وكل فقرة ليها مكان واضح (الصفحة، الخلية، السطر) في قاعدة بيانات على جهازك. لما تديها جملة بتدور على الفقرات اللي فيها نفس الكلمات، ولو فيها نفس الأرقام بتقولك SUPPORTED وبتديك المكان، ولو مصدر تاني قال رقم مختلف بتقولك CONFLICTING. مفيش AI ومفيش إنترنت.</p></div></section>
+<section><h2>Limits</h2><div class="card warn"><ul><li>Matching is by shared words and numbers, not meaning. Read the quoted sentence.</li><li>SUPPORTED does not prove a claim is true.</li><li>No OCR for scanned files, no embeddings or entity extraction yet.</li><li>Claims without numbers only get MENTIONED or NOT FOUND.</li></ul></div></section>
+</main>
+<footer>Built by <a style="color:var(--acc)" href="https://github.com/mohamed-elshamy-ai">Mohamed Elshamy</a>. Early release (v0.1.0). Issues and pull requests are welcome on <a style="color:var(--acc)" href="https://github.com/mohamed-elshamy-ai/sourcetrail">GitHub</a>.</footer>
+</body></html>

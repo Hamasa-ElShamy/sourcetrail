@@ -44,6 +44,18 @@ Statuses: `SUPPORTED`, `CONFLICTING` (some support, some differ), `DIFFERS` (onl
 
 The database is `~/.sourcetrail.db`, or set `SOURCETRAIL_DB` or pass `--db`.
 
+## Install on Windows, macOS and Linux
+
+Needs Python 3.9 or newer. On Windows install it from python.org and tick "Add python.exe to PATH".
+
+```bash
+# Windows (PowerShell):  py -m pip install git+https://github.com/mohamed-elshamy-ai/sourcetrail
+# macOS:                 python3 -m pip install git+https://github.com/mohamed-elshamy-ai/sourcetrail
+# Linux:                 python3 -m pip install --user git+https://github.com/mohamed-elshamy-ai/sourcetrail
+```
+
+Tested on Linux only. Android: not available (needs local files). Technical notes (architecture, algorithms, testing): [ARCHITECTURE.md](ARCHITECTURE.md). Website: https://mohamed-elshamy-ai.github.io/sourcetrail/
+
 ## How it works
 
 1. **Index.** Each file is split into passages with a citable location: PDF page, Word paragraph or table row, text line, Excel cell. Excel numbers are stored with their row label and column header (for example "Accuracy Value 92%"; 0.92 in a percent-formatted cell is stored as 92%). Passages go into SQLite with FTS5 full-text search. A file is only re-read when its hash changes.

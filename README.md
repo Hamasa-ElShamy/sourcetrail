@@ -1,0 +1,79 @@
+# SourceTrail
+
+**Where did I get that number from?**
+
+SourceTrail indexes your own files (PDF, Word, Excel, text) in a local SQLite database. Give it a claim and it shows the exact page, cell or line that supports it, and warns when another file gives a different number for the same thing.
+
+It is not "ask an AI about your files". It goes back from a piece of information to the evidence, and shows you the original sentence so you can judge for yourself. Everything stays on your machine. No AI model, no cloud.
+
+## Install and use
+
+```bash
+git clone https://github.com/mohamed-elshamy-ai/sourcetrail
+cd sourcetrail
+pip install -e .
+
+sourcetrail add ~/Research            # index a folder (re-running only re-reads changed files)
+sourcetrail trace "The model achieved 92% accuracy"
+sourcetrail list
+sourcetrail remove ~/Research/old.pdf
+```
+
+Real output from [`demo/`](demo/) (full output in `demo/demo-output.txt`):
+
+```
+CLAIM:
+The model achieved 92% accuracy
+
+Sources:
+1. Research_Paper.pdf  (supports)
+   page 2
+   "The model achieved 92% accuracy on the held-out test set."
+2. Experiment_Report.xlsx  (supports)
+   sheet Results, cell B2
+   "Accuracy Value 92%"
+3. Old_Notes.docx  (gives a different number)
+   paragraph 1
+   "In the first run the model reached 89% accuracy on validation data."
+
+Evidence Status: CONFLICTING
+Sources disagree on the number. Check which one is the original.
+```
+
+Statuses: `SUPPORTED`, `CONFLICTING` (some support, some differ), `DIFFERS` (only different numbers found), `MENTIONED` (claim has no number and relevant text exists), `NOT FOUND`. Exit code is 0 for SUPPORTED or MENTIONED and 1 otherwise.
+
+The database is `~/.sourcetrail.db`, or set `SOURCETRAIL_DB` or pass `--db`.
+
+## How it works
+
+1. **Index.** Each file is split into passages with a citable location: PDF page, Word paragraph or table row, text line, Excel cell. Excel numbers are stored with their row label and column header (for example "Accuracy Value 92%"; 0.92 in a percent-formatted cell is stored as 92%). Passages go into SQLite with FTS5 full-text search. A file is only re-read when its hash changes.
+2. **Understand the claim.** Take its meaningful words (stop words removed) and its numbers.
+3. **Find evidence.** Search passages that share the words. A passage counts as relevant if it has at least half of the claim's words (one word is enough for spreadsheet cells).
+4. **Check the numbers.** A relevant passage with the same numbers supports the claim. One with different numbers of the same kind (percent vs percent) is reported as a difference. 0.92 and 92% are treated as equal, and Arabic digits are understood.
+5. **Report** the status with every source and its exact location.
+
+### الشرح بالعربي
+
+بتضيف ملفاتك (PDF وWord وExcel ونصوص) فالأداة بتقسمها لفقرات وكل فقرة ليها مكان واضح (رقم الصفحة، الخلية في Excel، السطر) وبتخزنها في قاعدة بيانات SQLite على جهازك. لما تديها جملة (claim) بتاخد كلماتها المهمة وأرقامها، وبتدور على الفقرات اللي فيها نفس الكلمات. لو لقت فقرة فيها نفس الأرقام بتقولك "SUPPORTED" وبتديك الملف والصفحة أو الخلية. ولو لقت مصدر تاني بيقول رقم مختلف عن نفس الموضوع بتقولك "CONFLICTING". ولو ملقتش حاجة بتقولك NOT FOUND (ودي مش معناها إن الجملة غلط). مفيش AI ومفيش إنترنت.
+
+## Limits (read these)
+
+- Matching is by shared words and numbers. It does not understand meaning. Synonyms ("achieved" vs "reached") only count if enough other words match, and unrelated passages that share words can show up as a "different number". Always read the quoted sentence.
+- `SUPPORTED` means a passage with the same numbers and similar words exists. It does not prove the claim is true or that the source is correct.
+- Claims without numbers can only get `MENTIONED` or `NOT FOUND`.
+- Scanned PDFs and images are not read (no OCR yet). Excel formulas are read as their last saved value.
+- No semantic (embedding) search, entity extraction, LLM mode or browser extension yet.
+
+## Development
+
+```bash
+pip install -e ".[dev]" && pytest
+```
+
+## Roadmap (not built)
+
+OCR for scanned files, embeddings for meaning-based matching, entity extraction (names, dates), a window app, a browser extension.
+
+## License
+
+MIT

@@ -1,0 +1,40 @@
+$ sourcetrail add demo/sources
+unchanged  demo/sources/Experiment_Report.xlsx
+unchanged  demo/sources/Old_Notes.docx
+unchanged  demo/sources/Research_Paper.pdf
+
+$ sourcetrail trace "The model achieved 92% accuracy"
+CLAIM:
+The model achieved 92% accuracy
+
+Sources:
+1. Research_Paper.pdf  (supports)
+   page 2
+   "The model achieved 92% accuracy on the held-out test set."
+2. Experiment_Report.xlsx  (supports)
+   sheet Results, cell B2
+   "Accuracy Value 92%"
+3. Old_Notes.docx  (gives a different number)
+   paragraph 1
+   "In the first run the model reached 89% accuracy on validation data."
+
+Evidence Status: CONFLICTING
+Sources disagree on the number. Check which one is the original.
+
+$ sourcetrail trace "Training took 14 hours"
+CLAIM:
+Training took 14 hours
+
+Sources:
+1. Experiment_Report.xlsx  (supports)
+   sheet Results, cell B3
+   "Training hours Value 14"
+
+Evidence Status: SUPPORTED
+
+$ sourcetrail trace "Revenue grew 40% in Brazil"
+CLAIM:
+Revenue grew 40% in Brazil
+
+Evidence Status: NOT FOUND
+Nothing in the indexed files matches. This does not mean the claim is false.

@@ -100,3 +100,8 @@ Examples with real output are in [`demo/demo-output-matching.txt`](demo/demo-out
 - Arabic: light normalisation (alef and ta marbuta forms, the `ال` prefix, common plural endings).
 - Still NOT understood: real meaning. There are no embeddings and no AI model. A claim worded in a way the synonym list does not cover returns NOT FOUND. That does not mean the claim is false.
 - Arabic claims scan every indexed passage instead of using the search index, which is fine for a personal library and slower for very large ones.
+
+## Similar tools (honest comparison)
+
+Tools that check claims against sources exist: [proofpath](https://github.com/Yigtwxx/proofpath), [claim-grounding](https://github.com/vbcdng/claim-grounding) and [claimtrace](https://github.com/IzbassarO/claimtrace). SourceTrail is a smaller, offline word-matching version that points to the page, sheet or cell and handles Arabic. It has no semantic or embedding matching, so the tools above may find matches it misses.
+

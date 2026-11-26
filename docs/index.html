@@ -1,6 +1,8 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Lora:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;500;700&display=swap" rel="stylesheet"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SourceTrail: Where did I get that number from? Trace a claim to its evidence.</title><meta name="description" content="Index your own files and trace any claim to the page, cell or line that supports it.">
-<meta property="og:title" content="SourceTrail"><meta property="og:description" content="Index your own files and trace any claim to the page, cell or line that supports it.">
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&amp;family=Lora:wght@400;500;600&amp;family=Noto+Naskh+Arabic:wght@400;500;700&amp;display=swap" rel="stylesheet"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>SourceTrail: Where did I get that number from? Trace a claim to its evidence.</title><meta content="Index your own files and trace any claim to the page, cell or line that supports it." name="description"/>
+<meta content="SourceTrail" property="og:title"/><meta content="Index your own files and trace any claim to the page, cell or line that supports it." property="og:description"/>
 <style>
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;font:16px/1.65 var(--body);background:var(--bg);color:var(--fg)}
@@ -22,7 +24,7 @@ footer img{border-radius:50%;border:2px solid var(--line);display:block;margin:0
 .badge{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mut);margin-left:6px;vertical-align:middle}
 .ok{color:#2e9e5b}.no{color:#c0392b}
 
-:root{--bg:#f4ecd8;--fg:#2b2218;--mut:#7a6a52;--card:#fbf6e9;--line:#d8c9a6;--acc:#8a3b12;--accfg:#fff8ec;--code:#efe5cb;--codefg:#2b2218;--warn:#b5651d;--arabic:'Noto Naskh Arabic',sans-serif;--r:2px;--body:'Lora','Noto Naskh Arabic',system-ui,sans-serif;--head:'Libre Caslon Text','Noto Naskh Arabic',system-ui,sans-serif}
+:root{--bg:#f4ecd8;--fg:#2b2218;--mut:#75664f;--card:#fbf6e9;--line:#d8c9a6;--acc:#8a3b12;--accfg:#fff8ec;--code:#efe5cb;--codefg:#2b2218;--warn:#b5651d;--arabic:'Noto Naskh Arabic',sans-serif;--r:2px;--body:'Lora','Noto Naskh Arabic',system-ui,sans-serif;--head:'Libre Caslon Text','Noto Naskh Arabic',system-ui,sans-serif}
 header.hero{padding:64px 0 30px;border-bottom:3px double var(--line)}
 h1{font-family:var(--head);font-size:clamp(2rem,8vw,3rem);overflow-wrap:break-word;font-variant:small-caps;margin:0;letter-spacing:1px}.tag{font-style:italic;font-size:1.2rem;color:var(--mut);max-width:620px}
 .hero:after{content:"[1]  [2]  [3]";display:block;margin-top:14px;color:var(--acc);letter-spacing:4px}
@@ -46,50 +48,57 @@ h1{font-family:var(--head);font-size:clamp(2rem,8vw,3rem);overflow-wrap:break-wo
 .langtoggle{display:inline-flex;gap:4px;margin:0 0 14px;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:4px}
 .langtoggle button{border:0;background:transparent;color:var(--mut);font:inherit;font-weight:600;min-height:44px;padding:8px 20px;border-radius:99px;cursor:pointer;transition:background .2s var(--ease-out),color .2s var(--ease-out)}
 .langtoggle button[aria-pressed="true"]{background:var(--acc);color:var(--accfg)}
-</style></head><body>
-<header class="hero"><div class="wrap"><h1>SourceTrail</h1><p class="tag">Where did I get that number from? Trace a claim to its evidence.</p>
-<a class="btn" href="https://github.com/mohamed-elshamy-ai/sourcetrail">View on GitHub</a><a class="btn alt" href="#install">Install</a>
-<p class="mut" style="margin-top:16px">Open source &middot; MIT license &middot; early release v0.1.0</p></div></header>
-<main class="wrap">
-<section><div class="grid"><div class="card"><b>Exact locations</b><div class="mut">PDF page, Word paragraph, text line, Excel cell.</div></div><div class="card"><b>Spots disagreement</b><div class="mut">Different numbers in different files.</div></div><div class="card"><b>Local SQLite</b><div class="mut">Your files never leave your machine.</div></div><div class="card"><b>Incremental</b><div class="mut">Only changed files are re-read.</div></div></div></section>
-<section><h2>What it does</h2><p>SourceTrail indexes your PDFs, Word, Excel and text files locally. Give it a claim and it shows the exact page, cell or line that supports it, and warns when another file gives a different number. It does not ask an AI about your files: it takes you back to the original evidence.</p></section>
 
-<section><h2>Examples</h2><h3>Real output from the demo files in the repo</h3><pre><code>$ sourcetrail trace &quot;The model achieved 92% accuracy&quot;
+/* qa round 1: tokens for status colors, touch targets, RTL demo panels */
+footer a{display:inline-block;padding:14px 4px;min-height:44px;box-sizing:border-box}
+pre,code,.err,.q,.finder,.results,.redcard,.scan,.stack,.proof,.os pre{direction:ltr;text-align:left;unicode-bidi:isolate}
+pre,code,.err,.q{font-family:ui-monospace,Menlo,Consolas,monospace}
+html[dir=rtl] .q{font-family:var(--body)}
+.ok b{color:#17703f}.no b{color:#a8281b}
+html[dir=rtl] #install,html[dir=rtl] #install .card{direction:ltr;text-align:left}
+html[dir=rtl] *{letter-spacing:0!important;text-transform:none!important}
+</style></head><body>
+<header class="hero"><div class="wrap"><h1 data-ar="SourceTrail">SourceTrail</h1><p class="tag" data-ar="جبت الرقم ده منين؟ رجّع أي ادعاء لدليله.">Where did I get that number from? Trace a claim to its evidence.</p>
+<a class="btn" data-ar="شوف الكود على GitHub" href="https://github.com/mohamed-elshamy-ai/sourcetrail">View on GitHub</a><a class="btn alt" data-ar="التثبيت" href="#install">Install</a>
+<p class="mut" data-ar="مفتوحة المصدر · رخصة MIT · إصدار تجريبي v0.1.0" style="margin-top:16px">Open source · MIT license · early release v0.1.0</p></div></header>
+<main class="wrap">
+<section><div class="grid"><div class="card"><b data-ar="أماكن بالظبط">Exact locations</b><div class="mut" data-ar="صفحة PDF وفقرة Word وسطر نص وخلية Excel.">PDF page, Word paragraph, text line, Excel cell.</div></div><div class="card"><b data-ar="بتكشف الاختلاف">Spots disagreement</b><div class="mut" data-ar="أرقام مختلفة في ملفات مختلفة.">Different numbers in different files.</div></div><div class="card"><b data-ar="SQLite محلي">Local SQLite</b><div class="mut" data-ar="ملفاتك عمرها ما بتخرج من جهازك.">Your files never leave your machine.</div></div><div class="card"><b data-ar="تدريجي">Incremental</b><div class="mut" data-ar="الملفات اللي اتغيّرت بس هي اللي بتتقرا تاني.">Only changed files are re-read.</div></div></div></section>
+<section><h2 data-ar="بتعمل إيه">What it does</h2><p data-ar="SourceTrail">SourceTrail indexes your PDFs, Word, Excel and text files locally. Give it a claim and it shows the exact page, cell or line that supports it, and warns when another file gives a different number. It does not ask an AI about your files: it takes you back to the original evidence.</p></section>
+<section><h2 data-ar="أمثلة">Examples</h2><h3 data-ar="ده ناتج حقيقي من ملفات التجربة اللي في المشروع">Real output from the demo files in the repo</h3><pre><code>$ sourcetrail trace "The model achieved 92% accuracy"
 CLAIM:
 The model achieved 92% accuracy
 
 Sources:
 1. Research_Paper.pdf  (supports)
    page 2
-   &quot;The model achieved 92% accuracy on the held-out test set.&quot;
+   "The model achieved 92% accuracy on the held-out test set."
 2. Experiment_Report.xlsx  (supports)
    sheet Results, cell B2
-   &quot;Accuracy Value 92%&quot;
+   "Accuracy Value 92%"
 3. Old_Notes.docx  (gives a different number)
    paragraph 1
-   &quot;In the first run the model reached 89% accuracy on validation data.&quot;
+   "In the first run the model reached 89% accuracy on validation data."
 
 Evidence Status: CONFLICTING
 Sources disagree on the number. Check which one is the original.</code></pre></section>
-
 <section id="install"><h2>Install</h2><div class="os">
 <div class="card"><h3>Windows</h3><div class="mut">Install Python 3.9+ from python.org (tick "Add python.exe to PATH"), then in PowerShell:</div>
 <pre><code>py -m pip install git+https://github.com/mohamed-elshamy-ai/sourcetrail
 sourcetrail add $HOME\Documents\Research
-sourcetrail trace &quot;The model achieved 92% accuracy&quot;</code></pre><div><span class="mut"><b>Untested.</b></span> Should work. Only tested on Linux.</div></div>
+sourcetrail trace "The model achieved 92% accuracy"</code></pre><div><span class="mut"><b>Untested.</b></span> Should work. Only tested on Linux.</div></div>
 <div class="card"><h3>macOS</h3><div class="mut">Python 3.9+ (<code>brew install python</code> or python.org), then in Terminal:</div>
 <pre><code>python3 -m pip install git+https://github.com/mohamed-elshamy-ai/sourcetrail
 sourcetrail add ~/Research
-sourcetrail trace &quot;The model achieved 92% accuracy&quot;</code></pre><div><span class="mut"><b>Untested.</b></span> Should work. Only tested on Linux.</div></div>
+sourcetrail trace "The model achieved 92% accuracy"</code></pre><div><span class="mut"><b>Untested.</b></span> Should work. Only tested on Linux.</div></div>
 <div class="card"><h3>Linux</h3><div class="mut">Python 3.9+ is usually installed. In a terminal:</div>
 <pre><code>python3 -m pip install --user git+https://github.com/mohamed-elshamy-ai/sourcetrail
 sourcetrail add ~/Research
-sourcetrail trace &quot;The model achieved 92% accuracy&quot;</code></pre><div><span class="ok"><b>Tested.</b></span> Tested on Linux (Python 3.10, SQLite with FTS5).</div></div>
+sourcetrail trace "The model achieved 92% accuracy"</code></pre><div><span class="ok"><b>Tested.</b></span> Tested on Linux (Python 3.10, SQLite with FTS5).</div></div>
 <div class="card"><h3>Android</h3><div><span class="no"><b>Not available.</b></span> No Android version. It needs a local file index; there is no browser demo because it reads your local files.</div></div>
 </div></section>
-<section class="how-section"><h2><span class="lang-en">How it works</span><span class="lang-ar" hidden>إزاي بيشتغل</span></h2><div class="langtoggle" role="group" aria-label="Language / اللغة"><button type="button" data-lang="en" aria-pressed="true">English</button><button type="button" data-lang="ar" aria-pressed="false">العربية</button></div><div class="lang-en"><ol><li>Split each file into passages with a citable location and store them in SQLite full-text search.</li><li>Take the meaningful words and numbers of your claim.</li><li>Find passages sharing the words.</li><li>Same numbers means supports. Different numbers of the same kind means differs.</li><li>Report the status with every source.</li></ol>
+<section class="how-section"><h2><span class="lang-en">How it works</span><span class="lang-ar" hidden="">إزاي بيشتغل</span></h2><div aria-label="Language / اللغة" class="langtoggle" role="group"><button aria-pressed="true" data-lang="en" type="button">English</button><button aria-pressed="false" data-lang="ar" type="button">العربية</button></div><div class="lang-en"><ol><li>Split each file into passages with a citable location and store them in SQLite full-text search.</li><li>Take the meaningful words and numbers of your claim.</li><li>Find passages sharing the words.</li><li>Same numbers means supports. Different numbers of the same kind means differs.</li><li>Report the status with every source.</li></ol>
 </div><div class="card lang-ar" dir="rtl" lang="ar" style="text-align:start"><b>الشرح بالعربي</b><p>بتضيف ملفاتك فالأداة بتقسمها لفقرات وكل فقرة ليها مكان واضح (الصفحة، الخلية، السطر) في قاعدة بيانات على جهازك. لما تديها جملة بتدور على الفقرات اللي فيها نفس الكلمات، ولو فيها نفس الأرقام بتقولك SUPPORTED وبتديك المكان، ولو مصدر تاني قال رقم مختلف بتقولك CONFLICTING. مفيش AI ومفيش إنترنت.</p></div></section>
-<section><h2>Honest limits</h2><div class="card warn"><ul><li>Matching is by shared words and numbers, not meaning. Read the quoted sentence.</li><li>SUPPORTED does not prove a claim is true.</li><li>No OCR for scanned files, no embeddings or entity extraction yet.</li><li>Claims without numbers only get MENTIONED or NOT FOUND.</li></ul></div></section>
+<section><h2 data-ar="حدودها بصراحة">Honest limits</h2><div class="card warn"><ul><li data-ar="المطابقة بالكلمات والأرقام المشتركة، مش بالمعنى. اقرا الجملة المقتبسة.">Matching is by shared words and numbers, not meaning. Read the quoted sentence.</li><li data-ar="«مدعوم» مش معناها إن الادعاء صح.">SUPPORTED does not prove a claim is true.</li><li data-ar="مفيش OCR للملفات الممسوحة، ولا embeddings ولا استخراج كيانات لسه.">No OCR for scanned files, no embeddings or entity extraction yet.</li><li data-ar="الادعاءات من غير أرقام بتاخد «مذكور» أو «مش موجود» بس.">Claims without numbers only get MENTIONED or NOT FOUND.</li></ul></div></section>
 </main>
 <footer>Built by <a href="https://github.com/mohamed-elshamy-ai">Mohamed Elshamy</a>. Issues and pull requests are welcome on <a href="https://github.com/mohamed-elshamy-ai/sourcetrail">GitHub</a>.</footer>
 <script>
@@ -100,6 +109,8 @@ sourcetrail trace &quot;The model achieved 92% accuracy&quot;</code></pre><div><
   document.querySelectorAll('.lang-ar').forEach(function(e){e.hidden=lang!=='ar'});
   document.querySelectorAll('.langtoggle button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===lang?'true':'false')});
   document.querySelectorAll('.how-section').forEach(function(s){s.dir=lang==='ar'?'rtl':'ltr'});
+  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+  document.querySelectorAll('[data-ar]').forEach(function(e){if(e.dataset.en===undefined)e.dataset.en=e.innerHTML;e.innerHTML=lang==='ar'?e.dataset.ar:e.dataset.en});
   try{localStorage.setItem(KEY,lang)}catch(e){}
  }
  var def=(navigator.language||'en').toLowerCase().indexOf('ar')===0?'ar':'en';

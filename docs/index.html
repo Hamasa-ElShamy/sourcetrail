@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Lora:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;500;700&display=swap" rel="stylesheet"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SourceTrail: Where did I get that number from? Trace a claim to its evidence.</title><meta name="description" content="Index your own files and trace any claim to the page, cell or line that supports it.">
 <meta property="og:title" content="SourceTrail"><meta property="og:description" content="Index your own files and trace any claim to the page, cell or line that supports it.">
 <style>
@@ -22,11 +22,26 @@ footer img{border-radius:50%;border:2px solid var(--line);display:block;margin:0
 .badge{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mut);margin-left:6px;vertical-align:middle}
 .ok{color:#2e9e5b}.no{color:#c0392b}
 
-:root{--bg:#f4ecd8;--fg:#2b2218;--mut:#7a6a52;--card:#fbf6e9;--line:#d8c9a6;--acc:#8a3b12;--accfg:#fff8ec;--code:#efe5cb;--codefg:#2b2218;--warn:#b5651d;--r:2px;--body:Georgia,'Times New Roman',serif;--head:Georgia,serif}
+:root{--bg:#f4ecd8;--fg:#2b2218;--mut:#7a6a52;--card:#fbf6e9;--line:#d8c9a6;--acc:#8a3b12;--accfg:#fff8ec;--code:#efe5cb;--codefg:#2b2218;--warn:#b5651d;--arabic:'Noto Naskh Arabic',sans-serif;--r:2px;--body:'Lora','Noto Naskh Arabic',system-ui,sans-serif;--head:'Libre Caslon Text','Noto Naskh Arabic',system-ui,sans-serif}
 header.hero{padding:64px 0 30px;border-bottom:3px double var(--line)}
 h1{font-size:clamp(2rem,8vw,3rem);overflow-wrap:break-word;font-variant:small-caps;margin:0;letter-spacing:1px}.tag{font-style:italic;font-size:1.2rem;color:var(--mut);max-width:620px}
 .hero:after{content:"[1]  [2]  [3]";display:block;margin-top:14px;color:var(--acc);letter-spacing:4px}
-.hero .wrap{text-align:left}</style></head><body>
+.hero .wrap{text-align:left}
+/* design tokens: motion */
+:root{--ease-spring:cubic-bezier(.22,1.36,.32,1);--ease-out:cubic-bezier(.16,1,.3,1);--dur-m:.55s;--dur-s:.8s}
+/* Arabic: real family, no letter-spacing, taller lines */
+[dir="rtl"],[lang="ar"]{font-family:var(--arabic);letter-spacing:0;line-height:1.75}
+/* one orchestrated entrance: staggered hero reveal */
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.hero .wrap>*{animation:rise var(--dur-s) var(--ease-out) both}
+.hero .wrap>*:nth-child(1){animation-delay:.05s}.hero .wrap>*:nth-child(2){animation-delay:.15s}.hero .wrap>*:nth-child(3){animation-delay:.25s}.hero .wrap>*:nth-child(4){animation-delay:.34s}.hero .wrap>*:nth-child(5){animation-delay:.42s}
+/* micro-interactions */
+.btn{transition:transform .2s var(--ease-spring),box-shadow .2s var(--ease-out)}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(0) scale(.97)}
+.card{transition:border-color .25s var(--ease-out),transform .25s var(--ease-out)}
+.card:hover{border-color:var(--acc);transform:translateY(-2px)}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style></head><body>
 <header class="hero"><div class="wrap"><h1>SourceTrail</h1><p class="tag">Where did I get that number from? Trace a claim to its evidence.</p>
 <a class="btn" href="https://github.com/mohamed-elshamy-ai/sourcetrail">View on GitHub</a><a class="btn alt" href="#install">Install</a>
 <p class="mut" style="margin-top:16px">Open source &middot; MIT license &middot; early release v0.1.0</p></div></header>

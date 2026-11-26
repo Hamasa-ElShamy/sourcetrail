@@ -1,9 +1,7 @@
-# SourceTrail: technical notes / الشرح التقني
-
-## English
+# SourceTrail: technical notes
 
 **Modules**
-- `extract.py`: splits files into passages with citable locations. PDF per page (PyMuPDF), Word per paragraph and table row, text per line, Excel per cell. For a numeric Excel cell the passage is "row label + column header + value" (a percent-formatted 0.92 becomes "92%"), so a bare number has context.
+- `extract.py`: splits files into passages with citable locations. PDF per page (pypdfium2), Word per paragraph and table row, text per line, Excel per cell. For a numeric Excel cell the passage is "row label + column header + value" (a percent-formatted 0.92 becomes "92%"), so a bare number has context.
 - `db.py`: `Library`, a SQLite file with a `passages` table and an FTS5 index. Files are hashed, and a file is only re-read when its hash changes.
 - `trace.py`: claim analysis and evidence status. `cli.py`: command line.
 
@@ -23,21 +21,6 @@
 
 **Limits**: word and number matching only, false matches are possible, no OCR, no embeddings.
 
-## بالعربي
+## v0.2 additions
 
-**الأجزاء**: `extract.py` بيقسم الملفات لفقرات بمكانها (صفحة PDF، فقرة Word، سطر، خلية Excel). الخلية الرقمية بتتخزن مع اسم الصف وعنوان العمود عشان الرقم يبقى ليه سياق. `db.py` قاعدة SQLite بفهرس FTS5 وبتعيد قراءة الملف بس لو اتغير. `trace.py` بيحلل الجملة ويحدد الحالة.
-
-**الخوارزمية**: كلمات الجملة المهمة وأرقامها، بحث FTS5، الفقرة بتعتبر مرتبطة لو فيها نصف الكلمات على الأقل، لو فيها نفس الأرقام = بتدعم، ولو فيها أرقام تانية من نفس النوع = مختلفة. ٠.٩٢ = ٩٢٪. الحالات: SUPPORTED وCONFLICTING وDIFFERS وMENTIONED وNOT FOUND.
-
-**قرارات التصميم**: بنرجع الجملة الأصلية ومكانها بالظبط عشان انت تحكم، والأداة ما بتقولش إن الجملة صح. من غير سحابة ولا موديل عشان تتراجع وتبقى خاصة. البحث بالمعنى (embeddings) لسه مش مبني وده مكتوب في الحدود.
-
-**الاختبار**: ٩ اختبارات تغطي الدعم مع الصفحة والخلية، التعارض، الاختلاف، عدم الوجود، وإعادة الفهرسة.
-
-**الحدود**: مطابقة كلمات وأرقام بس، ممكن تطلع مطابقات غلط، مفيش OCR ولا embeddings.
-
-
-## v0.2 additions / إضافات الإصدار 0.2
-
-**English.** `trace.py` now builds search terms from each word, its stem and its synonym group (`_fts_query`), normalises Arabic (`_norm_ar`), and reads magnitude words (`million`, `ألف`, `مليون`) into numbers. Arabic claims scan all passages because SQLite prefix search cannot find words with an attached `ال`. Tested in `tests/test_sourcetrail.py` (10 tests). Limit: the synonym list is small and hand-made, so meaning outside it is not matched.
-
-**بالعربي.** أضفنا تجذيع بسيط للإنجليزي والعربي، وقائمة مرادفات صغيرة (زاد/ارتفع، إيرادات/مبيعات...)، وفهم الأرقام بالمليون والألف والأرقام الهندية. الحد: القائمة صغيرة ومكتوبة يدوي، فالمعنى خارجها مش بيتطابق، ومفيش نموذج ذكاء اصطناعي.
+`trace.py` now builds search terms from each word, its stem and its synonym group (`_fts_query`), normalises Arabic (`_norm_ar`), and reads magnitude words (`million`, `ألف`, `مليون`) into numbers. Arabic claims scan all passages because SQLite prefix search cannot find words with an attached `ال`. Tested in `tests/test_sourcetrail.py` (10 tests). Limit: the synonym list is small and hand-made, so meaning outside it is not matched.

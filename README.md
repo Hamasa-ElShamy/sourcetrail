@@ -8,7 +8,6 @@ SourceTrail indexes your own files (PDF, Word, Excel, text) in a local SQLite da
 
 It is not "ask an AI about your files". It goes back from a piece of information to the evidence, and shows you the original sentence so you can judge for yourself. Everything stays on your machine. No AI model, no cloud.
 
-
 PDF reading uses [pypdfium2](https://github.com/pypdfium2-team/pypdfium2) (Apache-2.0 / BSD, PDFium). No AGPL code is installed.
 
 ## Install and use
@@ -69,11 +68,7 @@ Tested on Linux only. Android: not available (needs local files). Technical note
 4. **Check the numbers.** A relevant passage with the same numbers supports the claim. One with different numbers of the same kind (percent vs percent) is reported as a difference. 0.92 and 92% are treated as equal, and Arabic digits are understood.
 5. **Report** the status with every source and its exact location.
 
-### الشرح بالعربي
-
-بتضيف ملفاتك (PDF وWord وExcel ونصوص) فالأداة بتقسمها لفقرات وكل فقرة ليها مكان واضح (رقم الصفحة، الخلية في Excel، السطر) وبتخزنها في قاعدة بيانات SQLite على جهازك. لما تديها جملة (claim) بتاخد كلماتها المهمة وأرقامها، وبتدور على الفقرات اللي فيها نفس الكلمات. لو لقت فقرة فيها نفس الأرقام بتقولك "SUPPORTED" وبتديك الملف والصفحة أو الخلية. ولو لقت مصدر تاني بيقول رقم مختلف عن نفس الموضوع بتقولك "CONFLICTING". ولو ملقتش حاجة بتقولك NOT FOUND (ودي مش معناها إن الجملة غلط). مفيش AI ومفيش إنترنت.
-
-## Limits (read these)
+## Limitations
 
 - Matching is by shared words and numbers. It does not understand meaning. Synonyms ("achieved" vs "reached") only count if enough other words match, and unrelated passages that share words can show up as a "different number". Always read the quoted sentence.
 - `SUPPORTED` means a passage with the same numbers and similar words exists. It does not prove the claim is true or that the source is correct.
@@ -87,14 +82,13 @@ Tested on Linux only. Android: not available (needs local files). Technical note
 pip install -e ".[dev]" && pytest
 ```
 
-## Roadmap (not built)
+## Roadmap (not yet built)
 
 OCR for scanned files, embeddings for meaning-based matching, entity extraction (names, dates), a window app, a browser extension.
 
 ## License
 
 MIT
-
 
 ## Matching: what it does and does not understand (v0.2)
 
@@ -106,7 +100,6 @@ Examples with real output are in [`demo/demo-output-matching.txt`](demo/demo-out
 - Still NOT understood: real meaning. There are no embeddings and no AI model. A claim worded in a way the synonym list does not cover returns NOT FOUND. That does not mean the claim is false.
 - Arabic claims scan every indexed passage instead of using the search index, which is fine for a personal library and slower for very large ones.
 
-## Similar tools (honest comparison)
+## Related tools
 
 Tools that check claims against sources exist: [proofpath](https://github.com/Yigtwxx/proofpath), [claim-grounding](https://github.com/vbcdng/claim-grounding) and [claimtrace](https://github.com/IzbassarO/claimtrace). SourceTrail is a smaller, offline word-matching version that points to the page, sheet or cell and handles Arabic. It has no semantic or embedding matching, so the tools above may find matches it misses.
-

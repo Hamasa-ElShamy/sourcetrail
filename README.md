@@ -1,5 +1,7 @@
 # SourceTrail
 
+[![tests](https://github.com/mohamed-elshamy-ai/sourcetrail/actions/workflows/tests.yml/badge.svg)](https://github.com/mohamed-elshamy-ai/sourcetrail/actions/workflows/tests.yml) ![tests: 10 passing](https://img.shields.io/badge/tests-10%20passing-brightgreen) ![license: MIT](https://img.shields.io/badge/license-MIT-blue)
+
 **Where did I get that number from?**
 
 SourceTrail indexes your own files (PDF, Word, Excel, text) in a local SQLite database. Give it a claim and it shows the exact page, cell or line that supports it, and warns when another file gives a different number for the same thing.

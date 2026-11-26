@@ -9,6 +9,7 @@ a{color:var(--acc)}code,pre{font-family:ui-monospace,Menlo,Consolas,monospace}
 pre{background:var(--code);color:var(--codefg);border:1px solid var(--line);border-radius:var(--r);padding:16px;overflow:auto;font-size:.86rem;line-height:1.5}
 .btn{display:inline-block;padding:11px 22px;border-radius:var(--r);background:var(--acc);color:var(--accfg);font-weight:600;text-decoration:none;margin:4px 8px 4px 0}
 .btn.alt{background:transparent;color:var(--fg);border:1px solid var(--line)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
 section{padding:26px 0}h2{font-family:var(--head);font-size:1.5rem;margin:0 0 14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px;margin:10px 0}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.grid .card{margin:0}
@@ -23,15 +24,16 @@ footer img{border-radius:50%;border:2px solid var(--line);display:block;margin:0
 
 :root{--bg:#f4ecd8;--fg:#2b2218;--mut:#7a6a52;--card:#fbf6e9;--line:#d8c9a6;--acc:#8a3b12;--accfg:#fff8ec;--code:#efe5cb;--codefg:#2b2218;--warn:#b5651d;--r:2px;--body:Georgia,'Times New Roman',serif;--head:Georgia,serif}
 header.hero{padding:64px 0 30px;border-bottom:3px double var(--line)}
-h1{font-size:3rem;font-variant:small-caps;margin:0;letter-spacing:1px}.tag{font-style:italic;font-size:1.2rem;color:var(--mut);max-width:620px}
+h1{font-size:clamp(2rem,8vw,3rem);overflow-wrap:break-word;font-variant:small-caps;margin:0;letter-spacing:1px}.tag{font-style:italic;font-size:1.2rem;color:var(--mut);max-width:620px}
 .hero:after{content:"[1]  [2]  [3]";display:block;margin-top:14px;color:var(--acc);letter-spacing:4px}
 .hero .wrap{text-align:left}</style></head><body>
 <header class="hero"><div class="wrap"><h1>SourceTrail</h1><p class="tag">Where did I get that number from? Trace a claim to its evidence.</p>
 <a class="btn" href="https://github.com/mohamed-elshamy-ai/sourcetrail">View on GitHub</a><a class="btn alt" href="#install">Install</a>
 <p class="mut" style="margin-top:16px">Open source &middot; MIT license &middot; early release v0.1.0</p></div></header>
 <main class="wrap">
-<section><h2>What it does</h2><p>SourceTrail indexes your PDFs, Word, Excel and text files locally. Give it a claim and it shows the exact page, cell or line that supports it, and warns when another file gives a different number. It does not ask an AI about your files: it takes you back to the original evidence.</p></section>
 <section><div class="grid"><div class="card"><b>Exact locations</b><div class="mut">PDF page, Word paragraph, text line, Excel cell.</div></div><div class="card"><b>Spots disagreement</b><div class="mut">Different numbers in different files.</div></div><div class="card"><b>Local SQLite</b><div class="mut">Your files never leave your machine.</div></div><div class="card"><b>Incremental</b><div class="mut">Only changed files are re-read.</div></div></div></section>
+<section><h2>What it does</h2><p>SourceTrail indexes your PDFs, Word, Excel and text files locally. Give it a claim and it shows the exact page, cell or line that supports it, and warns when another file gives a different number. It does not ask an AI about your files: it takes you back to the original evidence.</p></section>
+
 <section><h2>Examples</h2><h3>Real output from the demo files in the repo</h3><pre><code>$ sourcetrail trace &quot;The model achieved 92% accuracy&quot;
 CLAIM:
 The model achieved 92% accuracy
@@ -66,7 +68,7 @@ sourcetrail trace &quot;The model achieved 92% accuracy&quot;</code></pre><div><
 <div class="card"><h3>Android</h3><div><span class="no"><b>Not available.</b></span> No Android version. It needs a local file index; there is no browser demo because it reads your local files.</div></div>
 </div></section>
 <section><h2>How it works</h2><ol><li>Split each file into passages with a citable location and store them in SQLite full-text search.</li><li>Take the meaningful words and numbers of your claim.</li><li>Find passages sharing the words.</li><li>Same numbers means supports. Different numbers of the same kind means differs.</li><li>Report the status with every source.</li></ol>
-<div class="card rtl"><b>الشرح بالعربي</b><p>بتضيف ملفاتك فالأداة بتقسمها لفقرات وكل فقرة ليها مكان واضح (الصفحة، الخلية، السطر) في قاعدة بيانات على جهازك. لما تديها جملة بتدور على الفقرات اللي فيها نفس الكلمات، ولو فيها نفس الأرقام بتقولك SUPPORTED وبتديك المكان، ولو مصدر تاني قال رقم مختلف بتقولك CONFLICTING. مفيش AI ومفيش إنترنت.</p></div></section>
+<div class="card" dir="rtl" lang="ar" style="text-align:start"><b>الشرح بالعربي</b><p>بتضيف ملفاتك فالأداة بتقسمها لفقرات وكل فقرة ليها مكان واضح (الصفحة، الخلية، السطر) في قاعدة بيانات على جهازك. لما تديها جملة بتدور على الفقرات اللي فيها نفس الكلمات، ولو فيها نفس الأرقام بتقولك SUPPORTED وبتديك المكان، ولو مصدر تاني قال رقم مختلف بتقولك CONFLICTING. مفيش AI ومفيش إنترنت.</p></div></section>
 <section><h2>Honest limits</h2><div class="card warn"><ul><li>Matching is by shared words and numbers, not meaning. Read the quoted sentence.</li><li>SUPPORTED does not prove a claim is true.</li><li>No OCR for scanned files, no embeddings or entity extraction yet.</li><li>Claims without numbers only get MENTIONED or NOT FOUND.</li></ul></div></section>
 </main>
 <footer><img src="author.jpg" alt="Mohamed Elshamy" width="64" height="64">Built by <a href="https://github.com/mohamed-elshamy-ai">Mohamed Elshamy</a>. Issues and pull requests are welcome on <a href="https://github.com/mohamed-elshamy-ai/sourcetrail">GitHub</a>.</footer>

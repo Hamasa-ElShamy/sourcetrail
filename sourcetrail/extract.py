@@ -32,12 +32,20 @@ def extract(path):
                     out.append((f"table {ti} row {ri}", " ".join(cells)))
         return out
     if ext == ".pdf":
-        import pymupdf as fitz
+        import pypdfium2 as pdfium
         out = []
-        with fitz.open(path) as doc:
-            for n, page in enumerate(doc, 1):
-                for s in _sentences(page.get_text()):
-                    out.append((f"page {n}", s))
+        doc = pdfium.PdfDocument(path)
+        try:
+            for n in range(len(doc)):
+                page = doc[n]
+                tp = page.get_textpage()
+                text = tp.get_text_range()
+                tp.close()
+                page.close()
+                for s in _sentences(text):
+                    out.append((f"page {n + 1}", s))
+        finally:
+            doc.close()
         return out
     if ext == ".xlsx":
         return _xlsx(path)

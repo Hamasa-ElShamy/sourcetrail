@@ -8,6 +8,9 @@ SourceTrail indexes your own files (PDF, Word, Excel, text) in a local SQLite da
 
 It is not "ask an AI about your files". It goes back from a piece of information to the evidence, and shows you the original sentence so you can judge for yourself. Everything stays on your machine. No AI model, no cloud.
 
+
+PDF reading uses [pypdfium2](https://github.com/pypdfium2-team/pypdfium2) (Apache-2.0 / BSD, PDFium). No AGPL code is installed.
+
 ## Install and use
 
 ```bash

@@ -9,7 +9,7 @@ description = "Trace a claim back to the exact page, cell or line in your own fi
 readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
-dependencies = ["openpyxl>=3.1", "python-docx>=1.1", "PyMuPDF>=1.24.3"]
+dependencies = ["openpyxl>=3.1", "python-docx>=1.1", "pypdfium2>=4.30"]
 
 [project.optional-dependencies]
 dev = ["pytest", "reportlab"]

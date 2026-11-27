@@ -105,3 +105,15 @@ def test_stem_and_synonym_and_magnitude(tmp_path):
     assert T._numbers("٤٠٪") == [(40.0, True)]
     assert T._stem("الإيرادات") == T._stem("ايرادات")
     assert T._same((2.5e6, False), (2500000.0, False))
+
+
+def test_negation_and_neighbour_numbers(tmp_path):
+    from sourcetrail.db import Library
+    from sourcetrail.trace import trace, format_result
+    f = tmp_path / "p.txt"
+    f.write_text("Our model achieves 28.4 BLEU on the WMT 2014 English-to-German task.\nOn the WMT 2014 English-to-French task it achieves 41.0 BLEU.\nThe method requires little memory.\n")
+    lib = Library(str(tmp_path / "t.db")); lib.add_file(f)
+    assert trace(lib, "The model achieves 28.4 BLEU on the WMT 2014 English-to-German task").status == "SUPPORTED"
+    assert trace(lib, "The model achieves 31.4 BLEU on the WMT 2014 English-to-German task").status == "DIFFERS"
+    out = format_result(trace(lib, "The method does not require little memory"))
+    assert "negation differs" in out and "(supports)" not in out

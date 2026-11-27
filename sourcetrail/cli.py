@@ -20,7 +20,9 @@ def main(argv=None):
     r = sub.add_parser("remove", help="remove a file from the index")
     r.add_argument("path")
     a = ap.parse_args(argv)
-    lib = Library(a.db)
+    try: lib = Library(a.db)
+    except Exception as e:
+        print(f"error: cannot open the database ({e}). Use --db with a path you can write to.", file=sys.stderr); return 3
     try:
         if a.cmd == "add":
             p = Path(a.path)
@@ -29,11 +31,14 @@ def main(argv=None):
                 for f, n in res.items():
                     print(f"{'unchanged' if n is None else f'{n} passages'}  {f}")
                 for f, e in errors.items():
-                    print(f"skipped  {f}  ({e})", file=sys.stderr)
+                    why = "empty or damaged file" if type(e).__name__ in ("PackageNotFoundError", "BadZipFile") or "Package not found" in str(e) else ("damaged or password-protected PDF" if "PDFium" in str(e) or "Pdfium" in str(e) else str(e))
+                    print(f"skipped  {f}  ({why})", file=sys.stderr)
             else:
                 n = lib.add_file(p)
                 print("unchanged" if n is None else f"indexed {n} passages")
         elif a.cmd == "trace":
+            if not a.claim.strip():
+                print("error: give the claim to check, for example: sourcetrail trace \"The model reached 92% accuracy\"", file=sys.stderr); return 3
             res = trace(lib, a.claim)
             print(format_result(res))
             return 0 if res.status in ("SUPPORTED", "MENTIONED") else 1
@@ -43,7 +48,10 @@ def main(argv=None):
         elif a.cmd == "remove":
             lib.remove_file(a.path)
             print("removed")
-    except (ValueError, FileNotFoundError) as e:
+    except FileNotFoundError as e:
+        print(f"error: file or folder not found: {e.filename or e}", file=sys.stderr)
+        return 3
+    except ValueError as e:
         print(f"error: {e}", file=sys.stderr)
         return 3
     return 0

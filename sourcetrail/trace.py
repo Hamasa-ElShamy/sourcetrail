@@ -176,14 +176,18 @@ def trace(library, claim, max_evidence=8):
             continue
         pn = _numbers(text)
         if not claim_nums:
-            mentioned.append(Evidence(path, loc, text, "supports"))
+            mentioned.append(Evidence(path, loc, text, "mentions"))
             continue
         matched = [n for n in claim_nums if _contains_num(pn, n)]
         if len(matched) == len(claim_nums):
             supports.append(Evidence(path, loc, text, "supports", [n[0] for n in pn]))
         else:
-            other = [p for p in pn if any(_comparable(c, p) for c in claim_nums)]
-            if other and not matched:
+            # claim numbers this passage does not contain, and passage numbers the claim does not contain
+            unmatched = [n for n in claim_nums if not _contains_num(pn, n)]
+            other = [p for p in pn if any(_comparable(c, p) for c in unmatched) and not _contains_num(claim_nums, p)]
+            # when some of the claim's numbers do match (for example a year), the passage must also share nearly all the claim's words,
+            # otherwise a neighbouring result (another language pair, another metric) would be reported as a conflict
+            if other and (not matched or hit >= -(-4 * len(kws) // 5)):
                 differs.append(Evidence(path, loc, text, "differs", [p[0] for p in other]))
     if not claim_nums:
         return Result(claim, "MENTIONED" if mentioned else "NOT FOUND", mentioned[:max_evidence])
@@ -198,17 +202,28 @@ def trace(library, claim, max_evidence=8):
     return Result(claim, status, (supports + differs)[:max_evidence])
 
 
+NEG = re.compile(r"\b(not|no|never|none|cannot|without|neither|nor|isn't|aren't|doesn't|don't|didn't|won't|can't)\b|n't\b|(?<!\w)(لا|ليس|ليست|لم|لن|مش|بدون|غير)(?!\w)", re.I)
+
+
+def _neg(text):
+    """How many negation words. Differing counts mean the passage may say the opposite."""
+    return len(NEG.findall(text))
+
+
 def format_result(res):
     lines = ["CLAIM:", res.claim, ""]
     if res.evidence:
         lines.append("Sources:")
         for i, e in enumerate(res.evidence, 1):
-            tag = "supports" if e.kind == "supports" else "gives a different number"
+            tag = {"supports": "supports", "mentions": "mentions the same words"}.get(e.kind, "gives a different number")
+            if e.kind in ("supports", "mentions") and _neg(res.claim) != _neg(e.text): tag += "; BUT the negation differs, read it"
             lines.append(f"{i}. {Path(e.path).name}  ({tag})")
             lines.append(f"   {e.loc}")
             lines.append(f"   \"{e.text[:140]}\"")
         lines.append("")
     lines.append(f"Evidence Status: {res.status}")
+    if res.status == "MENTIONED":
+        lines.append("The files use the same words. That is not proof the claim is true: read each passage to see whether it says the same thing.")
     if res.status == "NOT FOUND":
         lines.append("Nothing in the indexed files matches. This does not mean the claim is false.")
     elif res.status in ("CONFLICTING", "DIFFERS"):

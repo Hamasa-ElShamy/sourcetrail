@@ -1,6 +1,6 @@
 # SourceTrail
 
-[![tests](https://github.com/mohamed-elshamy-ai/sourcetrail/actions/workflows/tests.yml/badge.svg)](https://github.com/mohamed-elshamy-ai/sourcetrail/actions/workflows/tests.yml) ![tests: 10 passing](https://img.shields.io/badge/tests-10%20passing-brightgreen) ![license: MIT](https://img.shields.io/badge/license-MIT-blue)
+[![tests](https://github.com/mohamed-elshamy-ai/sourcetrail/actions/workflows/tests.yml/badge.svg)](https://github.com/mohamed-elshamy-ai/sourcetrail/actions/workflows/tests.yml) ![tests: 11 passing](https://img.shields.io/badge/tests-11%20passing-brightgreen) ![license: MIT](https://img.shields.io/badge/license-MIT-blue)
 
 **Where did I get that number from?**
 

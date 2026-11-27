@@ -1,6 +1,6 @@
 # SourceTrail
 
-[![tests](https://github.com/Hamasa-ElShamy/sourcetrail/actions/workflows/tests.yml/badge.svg)](https://github.com/Hamasa-ElShamy/sourcetrail/actions/workflows/tests.yml) ![tests: 11 passing](https://img.shields.io/badge/tests-11%20passing-brightgreen) ![license: MIT](https://img.shields.io/badge/license-MIT-blue)
+[![tests](https://github.com/hamasa-lshmn/sourcetrail/actions/workflows/tests.yml/badge.svg)](https://github.com/hamasa-lshmn/sourcetrail/actions/workflows/tests.yml) ![tests: 11 passing](https://img.shields.io/badge/tests-11%20passing-brightgreen) ![license: MIT](https://img.shields.io/badge/license-MIT-blue)
 
 **Where did I get that number from?**
 
@@ -13,7 +13,7 @@ PDF reading uses [pypdfium2](https://github.com/pypdfium2-team/pypdfium2) (Apach
 ## Install and use
 
 ```bash
-git clone https://github.com/Hamasa-ElShamy/sourcetrail
+git clone https://github.com/hamasa-lshmn/sourcetrail
 cd sourcetrail
 pip install -e .
 
@@ -53,12 +53,12 @@ The database is `~/.sourcetrail.db`, or set `SOURCETRAIL_DB` or pass `--db`.
 Needs Python 3.9 or newer. On Windows install it from python.org and tick "Add python.exe to PATH".
 
 ```bash
-# Windows (PowerShell):  py -m pip install git+https://github.com/Hamasa-ElShamy/sourcetrail
-# macOS:                 python3 -m pip install git+https://github.com/Hamasa-ElShamy/sourcetrail
-# Linux:                 python3 -m pip install --user git+https://github.com/Hamasa-ElShamy/sourcetrail
+# Windows (PowerShell):  py -m pip install git+https://github.com/hamasa-lshmn/sourcetrail
+# macOS:                 python3 -m pip install git+https://github.com/hamasa-lshmn/sourcetrail
+# Linux:                 python3 -m pip install --user git+https://github.com/hamasa-lshmn/sourcetrail
 ```
 
-Tested on Linux only. Android: not available (needs local files). Technical notes (architecture, algorithms, testing): [ARCHITECTURE.md](ARCHITECTURE.md). Website: https://hamasa-elshamy.github.io/sourcetrail/
+Tested on Linux only. Android: not available (needs local files). Technical notes (architecture, algorithms, testing): [ARCHITECTURE.md](ARCHITECTURE.md). Website: https://hamasa-lshmn.github.io/sourcetrail/
 
 ## How it works
 
